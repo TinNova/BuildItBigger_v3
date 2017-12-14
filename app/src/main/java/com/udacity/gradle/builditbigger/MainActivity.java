@@ -32,8 +32,6 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        new EndpointsAsyncTask().execute(new Pair<Context, String>(this, mJoke.getJoke()));
-
     }
 
 
@@ -59,19 +57,16 @@ public class MainActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
+    // When Button Is Pressed It Launches The AsyncTask
     public void tellJoke(View view) {
+        new EndpointsAsyncTask().execute(new Pair<Context, String>(this, mJoke.getJoke()));
 
-        launchLibraryJokesDisplayActivity(joke);
+
         //Toast.makeText(this, joke, Toast.LENGTH_SHORT).show();
     }
 
-    public void launchLibraryJokesDisplayActivity(String string) {
-        Intent i = new Intent(this, JokeDisplayActivity.class);
-        i.putExtra("joke", string);
-        startActivity(i);
-    }
-
-    class EndpointsAsyncTask extends AsyncTask<Pair<Context, String>, Void, String> {
+    // AsyncTask runs and returns the Joke
+    public class EndpointsAsyncTask extends AsyncTask<Pair<Context, String>, Void, String> {
         private MyApi myApiService = null;
         private Context context;
 
@@ -109,11 +104,20 @@ public class MainActivity extends AppCompatActivity {
             }
         }
 
+        // OnPostExecute the joke launches the Intent activity
         @Override
         protected void onPostExecute(String result) {
             //Toast.makeText(context, result, Toast.LENGTH_LONG).show();
-
             joke = result;
+            launchLibraryJokesDisplayActivity(joke);
+
         }
     }
+
+    public void launchLibraryJokesDisplayActivity(String string) {
+        Intent i = new Intent(this, JokeDisplayActivity.class);
+        i.putExtra("joke", string);
+        startActivity(i);
+    }
+
 }
